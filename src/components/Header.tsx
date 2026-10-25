@@ -30,7 +30,7 @@ export const Header: React.FC = () => {
 
   const toggleApiEnvironment = () => {
     const isCloud = currentApiUrl.includes('render.com');
-    const newUrl = isCloud ? 'http://localhost:3000/api' : 'https://civarimda-api.onrender.com/api';
+    const newUrl = isCloud ? 'http://localhost:3000/api' : 'https://civarimda.onrender.com/api';
     api.setBaseUrl(newUrl);
     setCurrentApiUrl(newUrl);
     showToast(`API sunucusu değiştirildi: ${isCloud ? 'Yerel (Localhost)' : 'Canlı Bulut (Render)'}`, 'info');

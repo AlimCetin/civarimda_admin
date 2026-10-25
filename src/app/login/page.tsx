@@ -36,13 +36,13 @@ export default function LoginPage() {
 
   const handleFillDemo = (demoEmail: string) => {
     setEmail(demoEmail);
-    setPassword('admin123');
+    setPassword('123456');
     showToast(`Bilgiler dolduruldu: ${demoEmail}`, 'info');
   };
 
   const handleApiToggle = () => {
     const isCloud = apiUrl.includes('render.com');
-    const newUrl = isCloud ? 'http://localhost:3000/api' : 'https://civarimda-api.onrender.com/api';
+    const newUrl = isCloud ? 'http://localhost:3000/api' : 'https://civarimda.onrender.com/api';
     api.setBaseUrl(newUrl);
     setApiUrl(newUrl);
     showToast(`API hedefi: ${isCloud ? 'Localhost' : 'Render Bulut'} olarak ayarlandı`, 'info');
@@ -165,19 +165,19 @@ export default function LoginPage() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             <button
               type="button"
-              onClick={() => handleFillDemo('admin@civarimda.com')}
+              onClick={() => handleFillDemo('ali@a.com')}
               className="btn btn-secondary btn-sm"
               style={{ fontSize: 11 }}
             >
-              👑 Süper Admin
+              👑 Yönetici (ali@a.com)
             </button>
             <button
               type="button"
-              onClick={() => handleFillDemo('moderator@civarimda.com')}
+              onClick={() => handleFillDemo('ali1@a.com')}
               className="btn btn-secondary btn-sm"
               style={{ fontSize: 11 }}
             >
-              🛡️ Moderatör
+              🛡️ Moderatör (ali1@a.com)
             </button>
           </div>
         </div>

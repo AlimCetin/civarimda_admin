@@ -15,7 +15,7 @@ import {
   ActivityType,
 } from './types';
 
-const DEFAULT_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://civarimda-api.onrender.com/api';
+const DEFAULT_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://civarimda.onrender.com/api';
 
 class ApiClient {
   private baseUrl: string;
@@ -24,7 +24,11 @@ class ApiClient {
     this.baseUrl = DEFAULT_API_URL;
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('civarimda_api_url');
-      if (stored) this.baseUrl = stored;
+      if (stored && !stored.includes('civarimda-api')) {
+        this.baseUrl = stored;
+      } else {
+        localStorage.setItem('civarimda_api_url', DEFAULT_API_URL);
+      }
     }
   }
 
@@ -58,12 +62,14 @@ class ApiClient {
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
+    const url = typeof window !== 'undefined' ? `/api/proxy/${cleanEndpoint}` : `${this.baseUrl}/${cleanEndpoint}`;
     const token = this.getToken();
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       Accept: 'application/json',
+      'x-target-url': this.baseUrl,
       ...(options.headers as Record<string, string>),
     };
 

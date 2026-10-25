@@ -12,6 +12,10 @@ import {
   Activity,
   LogOut,
   Sparkles,
+  Tag,
+  Compass,
+  MessageSquare,
+  Sliders,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -22,8 +26,12 @@ export const Sidebar: React.FC = () => {
   const navItems = [
     { label: 'Genel Bakış', href: '/', icon: LayoutDashboard },
     { label: 'Kullanıcılar', href: '/users', icon: Users },
+    { label: 'Kampanyalar', href: '/campaigns', icon: Tag },
+    { label: 'Keşif Yerleri', href: '/places', icon: Compass },
+    { label: 'Geri Bildirim & Öneri', href: '/feedback', icon: MessageSquare },
     { label: 'Şikayet & Denetim', href: '/reports', icon: AlertTriangle },
     { label: 'Reklam Yönetimi', href: '/ads', icon: Megaphone },
+    { label: 'Sistem & Depolama', href: '/settings', icon: Sliders },
     { label: 'Güvenlik Logları', href: '/activity-logs', icon: ShieldCheck },
     { label: 'Sistem Durumu', href: '/health', icon: Activity },
   ];

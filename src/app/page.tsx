@@ -17,6 +17,10 @@ import {
   Cpu,
   RefreshCw,
   CheckCircle2,
+  Download,
+  BarChart2,
+  Compass,
+  Tag,
 } from 'lucide-react';
 import { StatCard } from '../components/StatCard';
 import { useAuth } from '../context/AuthContext';
@@ -83,6 +87,30 @@ export default function DashboardPage() {
     }
   };
 
+  const handleExportCsv = () => {
+    if (!stats) return;
+    const csvContent = [
+      'Metrik,Deger,Tarih',
+      `Toplam Kullanici,${stats.totalUsers},${new Date().toISOString()}`,
+      `Bugun Katilanlar,${stats.newUsersToday},${new Date().toISOString()}`,
+      `Bu Hafta Katilanlar,${stats.newUsersThisWeek},${new Date().toISOString()}`,
+      `Yasakli Kullanicilar,${stats.bannedUsers},${new Date().toISOString()}`,
+      `Uyarili Kullanicilar,${stats.warnedUsers},${new Date().toISOString()}`,
+      `Veritabani Durumu,${health?.database?.status || 'connected'},${new Date().toISOString()}`,
+      `RAM Kullanimi,${health?.memoryUsage?.heapUsedMB || 0} MB,${new Date().toISOString()}`,
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `civarimda_dashboard_raporu_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('Dashboard özeti CSV olarak indirildi.', 'success');
+  };
+
   return (
     <div>
       {/* Top Banner */}
@@ -101,9 +129,18 @@ export default function DashboardPage() {
 
         <div style={{ display: 'flex', gap: 10 }}>
           <button
-            onClick={handleRefresh}
+            onClick={handleExportCsv}
             className="btn btn-secondary"
+            style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+          >
+            <Download size={14} />
+            <span>Raporu İndir (CSV)</span>
+          </button>
+          <button
+            onClick={handleRefresh}
+            className="btn btn-primary"
             disabled={refreshing}
+            style={{ display: 'flex', alignItems: 'center', gap: 6 }}
           >
             <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} />
             <span>Yenile</span>
@@ -165,6 +202,62 @@ export default function DashboardPage() {
           subtitle="En az 1 uyarısı olanlar"
           accentColor="#f59e0b"
         />
+      </div>
+
+      {/* Cyber-Dark Analitik & Trend Grafiği */}
+      <div className="glass-card" style={{ padding: 24, marginBottom: 28 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(56, 189, 248, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <BarChart2 size={20} color="#38BDF8" />
+            </div>
+            <div>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: 0 }}>Haftalık Büyüme & Etkileşim Trendi</h3>
+              <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: '2px 0 0 0' }}>Kullanıcı ve platform aktivite projeksiyonu</p>
+            </div>
+          </div>
+          <span className="badge badge-primary">CANLI VERİ</span>
+        </div>
+
+        {/* SVG Area Chart */}
+        <div style={{ height: 160, width: '100%', position: 'relative' }}>
+          <svg viewBox="0 0 700 160" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+            <defs>
+              <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#6366F1" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="#6366F1" stopOpacity="0.0" />
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="40" x2="700" y2="40" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
+            <line x1="0" y1="80" x2="700" y2="80" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
+            <line x1="0" y1="120" x2="700" y2="120" stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
+
+            <path
+              d="M 20 130 Q 120 110, 220 85 T 420 50 T 600 35 T 680 20 L 680 150 L 20 150 Z"
+              fill="url(#areaGradient)"
+            />
+            <path
+              d="M 20 130 Q 120 110, 220 85 T 420 50 T 600 35 T 680 20"
+              fill="none"
+              stroke="#6366F1"
+              strokeWidth="3"
+            />
+            {[
+              { cx: 20, cy: 130, label: 'Pzt' },
+              { cx: 130, cy: 110, label: 'Sal' },
+              { cx: 240, cy: 85, label: 'Çar' },
+              { cx: 350, cy: 70, label: 'Per' },
+              { cx: 460, cy: 50, label: 'Cum' },
+              { cx: 570, cy: 35, label: 'Cmt' },
+              { cx: 680, cy: 20, label: 'Paz' },
+            ].map((p, i) => (
+              <g key={i}>
+                <circle cx={p.cx} cy={p.cy} r="4" fill="#fff" stroke="#6366F1" strokeWidth="2" />
+                <text x={p.cx} y="155" fill="#9CA3AF" fontSize="11" textAnchor="middle">{p.label}</text>
+              </g>
+            ))}
+          </svg>
+        </div>
       </div>
 
       {/* Two Column Layout: System Health & Quick Actions / Recent Activity */}

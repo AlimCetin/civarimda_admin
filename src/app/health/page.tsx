@@ -59,6 +59,14 @@ export default function HealthPage() {
     return `${d > 0 ? `${d}g ` : ''}${h}s ${m}d ${s}sn`;
   };
 
+  const isHealthy =
+    health?.status === 'ok' ||
+    health?.status?.toLowerCase() === 'ok' ||
+    health?.status?.toLowerCase() === 'healthy' ||
+    health?.database?.status === 'connected';
+
+  const isDbConnected = health?.database?.status === 'connected';
+
   return (
     <div>
       {/* Page Header */}
@@ -97,7 +105,7 @@ export default function HealthPage() {
           justifyContent: 'space-between',
           flexWrap: 'wrap',
           gap: 20,
-          border: `1px solid ${health?.status === 'ok' ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
+          border: `1px solid ${isHealthy ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
@@ -106,22 +114,22 @@ export default function HealthPage() {
               width: 56,
               height: 56,
               borderRadius: 16,
-              backgroundColor: health?.status === 'ok' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+              backgroundColor: isHealthy ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: health?.status === 'ok' ? '#10b981' : '#ef4444',
+              color: isHealthy ? '#10b981' : '#ef4444',
             }}
           >
-            {health?.status === 'ok' ? <CheckCircle2 size={32} /> : <AlertOctagon size={32} />}
+            {isHealthy ? <CheckCircle2 size={32} /> : <AlertOctagon size={32} />}
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <h2 style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>
-                {health?.status === 'ok' ? 'Tüm Sistemler Normal ve Operasyonel' : 'Altyapıda Aksaklık Tespit Edildi'}
+                {isHealthy ? 'Tüm Sistemler Normal ve Operasyonel' : 'Altyapıda Aksaklık Tespit Edildi'}
               </h2>
-              <span className={`badge ${health?.status === 'ok' ? 'badge-success' : 'badge-danger'}`}>
-                {health?.status === 'ok' ? 'ONLINE' : 'DEGRADED'}
+              <span className={`badge ${isHealthy ? 'badge-success' : 'badge-danger'}`}>
+                {isHealthy ? 'ONLINE' : 'DEGRADED'}
               </span>
             </div>
             <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
@@ -159,8 +167,8 @@ export default function HealthPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--border-subtle)' }}>
               <span style={{ color: 'var(--text-muted)' }}>Durum</span>
-              <span style={{ fontWeight: 600, color: health?.database?.status === 'connected' ? '#34d399' : '#f87171' }}>
-                {health?.database?.status === 'connected' ? 'Bağlantı Sağlandı' : 'Bağlantı Yok'}
+              <span style={{ fontWeight: 600, color: isDbConnected ? '#34d399' : '#f87171' }}>
+                {isDbConnected ? 'Bağlantı Sağlandı' : 'Bağlantı Yok'}
               </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--border-subtle)' }}>

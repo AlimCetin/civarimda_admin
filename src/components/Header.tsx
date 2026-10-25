@@ -20,7 +20,12 @@ export const Header: React.FC = () => {
     setChecking(true);
     try {
       const res = await api.getHealth();
-      setIsHealthy(res.status === 'ok');
+      const healthy =
+        res.status === 'ok' ||
+        res.status?.toLowerCase() === 'ok' ||
+        res.status?.toLowerCase() === 'healthy' ||
+        res.database?.status === 'connected';
+      setIsHealthy(healthy);
     } catch {
       setIsHealthy(false);
     } finally {

@@ -87,12 +87,12 @@ export default function AdsPage() {
 
   const handleOpenEdit = (ad: Ad) => {
     setEditingAd(ad);
-    setFormTitle(ad.title);
+    setFormTitle(ad.title || '');
     setFormDesc(ad.description || '');
-    setFormMediaUrl(ad.mediaUrl);
-    setFormMediaType(ad.mediaType);
-    setFormTargetUrl(ad.targetUrl || '');
-    setFormStatus(ad.status);
+    setFormMediaUrl(ad.mediaUrl || '');
+    setFormMediaType((ad.mediaType || ad.type || 'image') as 'image' | 'video');
+    setFormTargetUrl(ad.targetUrl || ad.linkUrl || '');
+    setFormStatus(ad.status || 'active');
     setFormBudget(ad.budget?.toString() || '');
     setFormStartDate(ad.startDate ? ad.startDate.split('T')[0] : '');
     setFormEndDate(ad.endDate ? ad.endDate.split('T')[0] : '');
@@ -113,11 +113,13 @@ export default function AdsPage() {
         description: formDesc,
         mediaUrl: formMediaUrl,
         mediaType: formMediaType,
+        type: formMediaType,
         targetUrl: formTargetUrl || undefined,
+        linkUrl: formTargetUrl || undefined,
         status: formStatus,
         budget: formBudget ? parseFloat(formBudget) : undefined,
-        startDate: formStartDate ? new Date(formStartDate).toISOString() : undefined,
-        endDate: formEndDate ? new Date(formEndDate).toISOString() : undefined,
+        startDate: formStartDate ? new Date(formStartDate).toISOString() : new Date().toISOString(),
+        endDate: formEndDate ? new Date(formEndDate).toISOString() : new Date(Date.now() + 30 * 86400000).toISOString(),
       };
 
       if (editingAd) {
@@ -267,7 +269,7 @@ export default function AdsPage() {
                       </div>
                     </td>
                     <td>
-                      <span className="badge badge-neutral">{ad.mediaType.toUpperCase()}</span>
+                      <span className="badge badge-neutral">{(ad.mediaType || ad.type || 'IMAGE').toUpperCase()}</span>
                     </td>
                     <td>
                       <span
@@ -283,15 +285,15 @@ export default function AdsPage() {
                       </span>
                     </td>
                     <td>
-                      <span style={{ fontWeight: 600 }}>{ad.impressions || 0}</span>
+                      <span style={{ fontWeight: 600 }}>{ad.impressions ?? ad.impressionCount ?? 0}</span>
                     </td>
                     <td>
-                      <span style={{ fontWeight: 600, color: '#818cf8' }}>{ad.clicks || 0}</span>
+                      <span style={{ fontWeight: 600, color: '#818cf8' }}>{ad.clicks ?? ad.clickCount ?? 0}</span>
                     </td>
                     <td>
-                      {ad.targetUrl ? (
+                      {(ad.targetUrl || ad.linkUrl) ? (
                         <a
-                          href={ad.targetUrl}
+                          href={ad.targetUrl || ad.linkUrl}
                           target="_blank"
                           rel="noreferrer"
                           style={{

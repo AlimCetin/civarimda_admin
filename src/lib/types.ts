@@ -71,16 +71,21 @@ export interface Ad {
   title: string;
   description?: string;
   mediaUrl: string;
-  mediaType: 'image' | 'video';
+  mediaType?: 'image' | 'video';
+  type?: 'image' | 'video';
   targetUrl?: string;
+  linkUrl?: string;
   status: AdStatus;
-  impressions: number;
-  clicks: number;
-  views: number;
+  impressions?: number;
+  clicks?: number;
+  views?: number;
+  impressionCount?: number;
+  clickCount?: number;
+  viewCount?: number;
   budget?: number;
   startDate?: string;
   endDate?: string;
-  createdBy: string;
+  createdBy?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -150,3 +155,83 @@ export interface SystemHealth {
   uptimeSeconds?: number;
   version?: string;
 }
+
+export interface Campaign {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl?: string | null;
+  city: string;
+  businessName: string;
+  discountRate: string;
+  maxClaims?: number | null;
+  currentClaims?: number;
+  startDate?: string | null;
+  endDate?: string | null;
+  hasCode?: boolean;
+  latitude?: number | null;
+  longitude?: number | null;
+  distance?: number | null;
+  userId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Place {
+  id: string;
+  name: string;
+  title?: string;
+  description: string;
+  imageUrl?: string | null;
+  images?: string[];
+  city: string;
+  businessName?: string;
+  category: string;
+  address?: string;
+  phone?: string;
+  workingHours?: string;
+  entryFee?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  distance?: number | null;
+  userId?: string;
+  commentCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Feedback {
+  id: string;
+  userId?: string | null;
+  userName: string;
+  userEmail: string;
+  rating: number;
+  type: 'rating' | 'suggestion' | 'bug' | 'other';
+  title?: string;
+  message: string;
+  deviceInfo?: string;
+  status: 'pending' | 'reviewed' | 'resolved' | 'archived';
+  adminNote?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FeedbackStats {
+  totalCount: number;
+  avgRating: number;
+  suggestionCount: number;
+  bugCount: number;
+  ratingCount: number;
+  pendingCount: number;
+}
+
+export interface AppSetting {
+  key: string;
+  value: string;
+  description: string;
+  type: 'string' | 'number' | 'boolean' | 'json';
+  isSecret: boolean;
+  isPublic: boolean;
+  updatedAt: string;
+}
+
